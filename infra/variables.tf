@@ -14,14 +14,32 @@ variable "proxmox_token" {
 }
 
 # ---- Proxmox environment defaults ----
-variable "node"         { description = "Proxmox node name"; default = "homelab" }
-variable "bridge"       { description = "Linux bridge for VMs"; default = "vmbr0" }
-variable "datastore_vm" { description = "Storage for VM disks"; default = "local" }
-variable "datastore_ci" { description = "Storage for cloud-init"; default = "local" }
+variable "node" {
+  description = "Proxmox node name"
+  default     = "homelab"
+}
+variable "bridge" {
+  description = "Linux bridge for VMs"
+  default     = "vmbr0"
+}
+variable "datastore_vm" {
+  description = "Storage for VM disks"
+  default     = "local"
+}
+variable "datastore_ci" {
+  description = "Storage for cloud-init"
+  default     = "local"
+}
 
 # ---- Network ----
-variable "gateway" { description = "Default gateway"; default = "10.0.0.1" }
-variable "cidr"    { description = "CIDR suffix for static IPs"; default = "/24" }
+variable "gateway" {
+  description = "Default gateway"
+  default     = "10.0.0.1"
+}
+variable "cidr" {
+  description = "CIDR suffix for static IPs"
+  default     = "/24"
+}
 
 # ---- Template & access ----
 variable "template_id" {
