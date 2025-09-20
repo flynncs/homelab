@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Terraform/OpenTofu
+.terraform/
+.tofu/
+**/.terraform/
+**/.tofu/
+terraform.tfstate
+terraform.tfstate.*
+tofu.tfstate
+tofu.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ansible artifacts
+ansible/inventories/generated/*
+*.retry
+*.vault_pass
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Local env files
+*.env
+.env*
+apps/**/secrets*.env

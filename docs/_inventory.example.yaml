@@ -1,0 +1,54 @@
+proxmox:
+  api_url: "https://10.0.0.1:8006/api2/json"
+  user: "root@pam"
+  token_name: "tofu"
+  token_value: "<DON'T COMMIT>"
+  datastore_vm: "local-zfs"
+  datastore_ci: "local-zfs"
+  bridge: "vmbr0"
+  node: "pve01"
+
+networking:
+  lan_gateway: "10.0.0.1"
+  cidr: "/24"
+  dns: "10.0.0.1"
+
+current_layout:
+  jellyfin:
+    type: "lxc"
+    host: "pve01"
+    ip: "10.0.0.1"     
+    gpu: "intel-qs"
+    data_paths:
+      - "/var/lib/jellyfin"
+  arr_stack:
+    type: "vm"
+    ip: "10.0.0.11"     
+    stacks: ["prowlarr","radarr","sonarr","sabnzbd","qbittorrent"]
+    data_paths:
+      - "/srv/media/config/*"
+      - "/mnt/downloads"
+      - "/mnt/media"
+  jellyseerr:
+    type: "vm"
+    ip: "10.0.0.11"
+    data_paths:
+      - "/srv/media/config/jellyseerr"
+  tunnel_gateway:
+    type: "vm"
+    ip: "10.0.0.50" 
+    stack: "pangolin/traefik"
+    exposes_services:
+      - { name: "jellyfin", backend: "10.0.0.1:8096" }
+
+target_layout_v2:
+  mgmt_vm:      { name: "mgmt-vm",      ip: "10.0.0.150", cpu: 2, ram_mb: 2048, disk_gb: 20 }
+  apps_vm_1:    { name: "apps-vm-1",    ip: "10.0.0.151", cpu: 4, ram_mb: 8192, disk_gb: 80 }
+  tunnel_vm_v2: { name: "tunnel-vm-v2", ip: "10.0.0.152", cpu: 2, ram_mb: 2048, disk_gb: 20 }
+  jellyfin_lxc_v2:
+    name: "jellyfin-lxc-v2"
+    ip: "10.0.0.153"
+    cpu: 4
+    ram_mb: 4096
+    disk_gb: 40
+    gpu: "intel-qs"
