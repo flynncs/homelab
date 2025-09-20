@@ -45,7 +45,7 @@ variable "cidr" {
 variable "template_id" {
   description = "VMID of the cloud-init template"
   type        = number
-  default     = 9000
+  default     = 9001
 }
 variable "ssh_pub_key_path" {
   description = "Path to SSH public key to inject via cloud-init"

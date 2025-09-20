@@ -37,9 +37,16 @@ resource "proxmox_virtual_environment_vm" "vm" {
         gateway = var.gateway
       }
     }
+    dns {
+      servers = ["1.1.1.1", "8.8.8.8"]
+    }
   }
 }
 
 output "ip" {
-  value = proxmox_virtual_environment_vm.vm.ipv4_addresses[0]
+  value = var.ip
+}
+
+output "ips_reported" {
+  value = proxmox_virtual_environment_vm.vm.ipv4_addresses
 }
