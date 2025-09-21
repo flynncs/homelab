@@ -1,0 +1,7 @@
+- name: Baseline setup on all hosts
+  hosts: all
+  gather_facts: yes
+  become: true
+
+  roles:
+    - baseline

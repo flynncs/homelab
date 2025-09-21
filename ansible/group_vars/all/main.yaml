@@ -1,0 +1,10 @@
+# who Ansible logs in as (already set in inventory too; keeping here for clarity)
+ansible_user: flynn
+
+# set desired timezone
+timezone: Pacific/Auckland
+
+# enforce working DNS on VMs
+resolver_dns_servers:
+  - 1.1.1.1
+  - 8.8.8.8

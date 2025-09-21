@@ -1,1 +1,47 @@
-# filled next step
+# 1) set timezone
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+# 2) make sure qemu-guest-agent is installed (idempotent)
+- name: Ensure qemu-guest-agent is installed
+  become: true
+  ansible.builtin.apt:
+    name: qemu-guest-agent
+    state: present
+    update_cache: yes
+
+# 3) ensure the agent is running (so Proxmox can see IPs/shutdown cleanly)
+- name: Ensure qemu-guest-agent is running
+  become: true
+  ansible.builtin.service:
+    name: qemu-guest-agent
+    state: started
+    enabled: yes
+
+# 4) enforce DNS via systemd-resolved (uses primary interface automatically)
+- name: Discover default interface
+  ansible.builtin.set_fact:
+    default_if: "{{ ansible_default_ipv4.interface }}"
+
+- name: Set DNS servers on default interface
+  become: true
+  ansible.builtin.command: >
+    resolvectl dns {{ default_if }} {{ resolver_dns_servers | join(' ') }}
+  changed_when: false # treat as noop if already set
+
+- name: Flush resolver caches
+  become: true
+  ansible.builtin.command: resolvectl flush-caches
+  changed_when: false
+
+# 5) base utilities on every box
+- name: Install baseline packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - curl
+      - ca-certificates
+      - unzip
+      - htop
+    state: present
