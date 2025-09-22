@@ -1,0 +1,8 @@
+komodo_action: "install"
+komodo_core_url: "http://10.0.0.150:9120"
+server_name: "{{ inventory_hostname }}"
+server_address: "http://{{ ansible_host }}:8120" # periphery’s own advertised URL on LAN
+komodo_passkeys:
+  - "{{ komodo_passkey }}"
+enable_server_management: true
+ssl_enabled: false

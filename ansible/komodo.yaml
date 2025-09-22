@@ -1,0 +1,15 @@
+- name: Komodo Core on mgmt
+  hosts: mgmt
+  become: true
+  vars_files:
+    - group_vars/all/vault.yaml
+  roles:
+    - komodo_core_compose
+
+- name: Komodo Periphery on docker hosts
+  hosts: docker_hosts
+  become: true
+  vars_files:
+    - group_vars/all/vault.yaml
+  roles:
+    - bpbradley.komodo

@@ -1,0 +1,72 @@
+- name: Ensure Docker & compose plugin exist
+  import_role:
+    name: docker
+
+- name: Create Komodo directory
+  file:
+    path: /opt/komodo
+    state: directory
+    mode: "0755"
+
+- name: Ensure Komodo backups dir exists
+  file:
+    path: /opt/komodo/backups
+    state: directory
+    mode: "0755"
+
+- name: Download official Komodo compose (Mongo flavor)
+  get_url:
+    url: "https://raw.githubusercontent.com/moghtech/komodo/main/compose/mongo.compose.yaml"
+    dest: /opt/komodo/docker-compose.yaml
+    mode: "0644"
+
+- name: Download official compose.env
+  get_url:
+    url: "https://raw.githubusercontent.com/moghtech/komodo/main/compose/compose.env"
+    dest: /opt/komodo/compose.env
+    mode: "0644"
+
+- name: Write project .env for compose variable substitution
+  copy:
+    dest: /opt/komodo/.env
+    mode: "0644"
+    content: |
+      # Used by the compose YAML itself (not container env)
+      COMPOSE_KOMODO_IMAGE_TAG={{ komodo_version | default('latest') }}
+      COMPOSE_KOMODO_BACKUPS_PATH=/opt/komodo/backups
+      KOMODO_DB_USERNAME={{ komodo_db_username }}
+      KOMODO_DB_PASSWORD={{ komodo_db_password }}
+
+- name: Set env values in compose.env
+  lineinfile:
+    path: /opt/komodo/compose.env
+    regexp: "^{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop:
+    - { key: "COMPOSE_KOMODO_IMAGE_TAG", value: "{{ komodo_version }}" } # optional; we already set in .env
+    - { key: "KOMODO_HOST", value: "{{ komodo_public_url }}" }
+    - { key: "KOMODO_PASSKEY", value: "{{ komodo_passkey }}" }
+    - { key: "KOMODO_DB_USERNAME", value: "{{ komodo_db_username }}" }
+    - { key: "KOMODO_DB_PASSWORD", value: "{{ komodo_db_password }}" }
+
+- name: (Optional) add admin bootstrap envs
+  blockinfile:
+    path: /opt/komodo/compose.env
+    marker: "# {mark} ANSIBLE ADMIN BOOTSTRAP"
+    block: |
+      KOMODO_INIT_ADMIN_USERNAME={{ komodo_init_admin_username }}
+      KOMODO_INIT_ADMIN_PASSWORD={{ komodo_init_admin_password }}
+  when: komodo_init_admin_username is defined and komodo_init_admin_password is defined
+
+- name: Compose up Komodo Core (Mongo + Core)
+  community.docker.docker_compose_v2:
+    project_src: /opt/komodo
+    state: present
+
+# open the port locally (UFW)
+- name: Allow Komodo port locally
+  ufw:
+    rule: allow
+    port: "{{ komodo_core_port }}"
+    proto: tcp
+  ignore_errors: true

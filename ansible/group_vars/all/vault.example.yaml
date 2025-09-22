@@ -1,0 +1,21 @@
+# Used to derive other secrets if you want deterministic but hidden values
+deployment_secret: "CHOOSE_A_LONG_RANDOM_STRING"
+
+# Komodo Core admin bootstrap (first login)
+komodo_init_admin_username: "admin"
+komodo_init_admin_password: "SUPER_SECRET_ADMIN_PASS"
+
+# Database credentials
+komodo_db_username: "komodo"
+komodo_db_password: "SUPER_SECRET_DB_PASS"
+
+# Shared passkey between Core and Peripheries
+komodo_passkey: "SUPER_SECRET_PASSKEY"
+
+# JWT and webhook secrets for Core
+komodo_jwt_secret: "SUPER_SECRET_JWT"
+komodo_webhook_secret: "SUPER_SECRET_WEBHOOK"
+
+# Optional: Komodo Core API keypair (if you enable server auto-management)
+komodo_core_api_key: "PASTE_FROM_CORE_UI"
+komodo_core_api_secret: "PASTE_FROM_CORE_UI"
